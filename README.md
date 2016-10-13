@@ -1,0 +1,1 @@
+# WordPress-Easy-Grayscale
