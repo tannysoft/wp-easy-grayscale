@@ -4,14 +4,5 @@
  */
 
 html {
-	/* IE */
-	filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
-	/* Chrome, Safari */
-	-webkit-filter: grayscale(1);
-	/* Firefox */
-	filter: grayscale(1);
-	filter: grayscale(100%);
-	filter: gray; 
-	-moz-filter: grayscale(100%);
-	-webkit-filter: grayscale(100%);
+
 }

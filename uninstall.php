@@ -27,5 +27,6 @@
 
 // If uninstall not called from WordPress, then exit.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	delete_option( 'wp_easy_grayscale_option' );
 	exit;
 }
