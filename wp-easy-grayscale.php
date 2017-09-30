@@ -1,11 +1,11 @@
 <?php
 /**
 * Plugin Name:		 WordPress Easy Grayscale
-* Plugin URI:		 http://www.tannysoft.com/content/wordpress-easy-grayscale
-* Description:		 ปลั้กอินสำหรับเปลี่ยนสีเว็บไซต์ที่ใช้ WordPress เป็นสีขาวดำ สอบถามเพิ่มเติมได้ที่ http://www.tannysoft.com
-* Version:			 1.1.0
+* Plugin URI:		 https://www.tannysoft.com/content/wordpress-easy-grayscale
+* Description:		 ปลั้กอินสำหรับเปลี่ยนสีเว็บไซต์ที่ใช้ WordPress เป็นสีขาวดำ สอบถามเพิ่มเติมได้ที่ https://www.tannysoft.com
+* Version:			 1.2.0
 * Author:			 Tannysoft
-* Author 			 URI: http://www.tannysoft.com
+* Author 			 URI: https://www.tannysoft.com
 * License:           GPL-2.0+
 * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 * Text Domain:       wp-easy-grayscale
@@ -13,6 +13,50 @@
 */
 
 add_action( 'wp_enqueue_scripts', 'wp_easy_grayscale_styles' );
+
+function load_jquery() {
+    if ( ! wp_script_is( 'jquery', 'enqueued' )) {
+
+        //Enqueue
+        wp_enqueue_script( 'jquery' );
+
+    }
+}
+add_action( 'wp_enqueue_scripts', 'load_jquery' );
+
+function add_black_ribbon() {
+    echo "<img src='" . plugins_url( 'img/black-ribbon.png', __FILE__ ) . "' class='black-ribbon' />";
+}
+
+function add_remove_grayscale() {
+    echo "<div class=\"remove-filter\"><a href=\"#\" class=\"btn-remove-filter\">ปิดโหมดสีเทา</a></div>";
+    echo '
+
+    <script>
+    
+    jQuery(document).ready(function($) {
+
+        var is_grayscale = localStorage.getItem("wp_easy_grayscale");
+
+        if(is_grayscale==1) {
+            clear_grayscale();
+        }
+
+        $( ".btn-remove-filter" ).click(function() {
+            clear_grayscale();
+            localStorage.setItem("wp_easy_grayscale", 1);
+        });
+
+        function clear_grayscale() {
+            $("html").addClass("no-grayscale");
+            $(".remove-filter").remove();
+        }
+
+    });   
+
+    </script>    
+    ';
+}
 
 function wp_easy_grayscale_styles() {
 	if(!is_admin()) {
@@ -28,8 +72,11 @@ function wp_easy_grayscale_styles() {
 
 		wp_enqueue_style(
 			'wp-easy-grayscale',
-			plugin_dir_url( __FILE__ ) . 'css/wp-easy-grayscale.css'
-		);
+            plugin_dir_url( __FILE__ ) . 'css/wp-easy-grayscale.css', array(),
+            '1.1.2.000001',
+            'all'
+        );
+
         $custom_css = "
         	html {
 				/* IE */
@@ -43,7 +90,13 @@ function wp_easy_grayscale_styles() {
 				-moz-filter: grayscale($percent%);
 				-webkit-filter: grayscale($percent%);
 			}";
-    	wp_add_inline_style( 'wp-easy-grayscale', $custom_css );
+        wp_add_inline_style( 'wp-easy-grayscale', $custom_css );
+        
+        if(isset( $option['wp_ribbon'] )) {
+            add_action('wp_footer', 'add_black_ribbon');
+        }
+
+        add_action('wp_footer', 'add_remove_grayscale');
 	}
 }
 
@@ -104,7 +157,7 @@ class WP_Easy_Grayscale_Page
      * Register and add settings
      */
     public function page_init()
-    {        
+    {
         register_setting(
             'my_option_group', // Option group
             'wp_easy_grayscale_option', // Option name
@@ -124,7 +177,15 @@ class WP_Easy_Grayscale_Page
             array( $this, 'percent_number_callback' ), // Callback
             'wp-easy-grayscale', // Page
             'setting_section_id' // Section           
-        );      
+        );
+
+        add_settings_field(
+            'wp_ribbon', // ID
+            'ริบบิ้น', // Title 
+            array( $this, 'wp_ribbon_callback' ), // Callback
+            'wp-easy-grayscale', // Page
+            'setting_section_id' // Section           
+        ); 
 
     }
 
@@ -138,6 +199,8 @@ class WP_Easy_Grayscale_Page
         $new_input = array();
         if( isset( $input['percent_number'] ) )
             $new_input['percent_number'] = absint( $input['percent_number'] );
+        if( isset( $input['wp_ribbon'] ) )
+            $new_input['wp_ribbon'] = absint( $input['wp_ribbon'] );
 
         return $new_input;
     }
@@ -151,7 +214,15 @@ class WP_Easy_Grayscale_Page
     {
         printf(
             '<input type="text" id="percent_number" name="wp_easy_grayscale_option[percent_number]" value="%s" />',
-            isset( $this->options['percent_number'] ) ? esc_attr( $this->options['percent_number']) : '90'
+            isset( $this->options['percent_number'] ) ? esc_attr( $this->options['percent_number']) : '40'
+        );
+    }
+
+    public function wp_ribbon_callback()
+    {
+        printf(
+            '<input type="checkbox" id="wp_ribbon" name="wp_easy_grayscale_option[wp_ribbon]" %s />',
+            isset( $this->options['wp_ribbon'] ) ? 'checked' : ''
         );
     }
 

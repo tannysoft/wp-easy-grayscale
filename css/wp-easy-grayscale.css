@@ -3,6 +3,92 @@
  * included in this file.
  */
 
-html {
+html.no-grayscale {
+    /* IE */
+    filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=0);
+    /* Chrome, Safari */
+    -webkit-filter: grayscale(0);
+    /* Firefox */
+    filter: grayscale(0);
+    filter: grayscale(0%);
+    filter: gray;
+    -moz-filter: grayscale(0%);
+    -webkit-filter: grayscale(0%);
+}
 
+.black-ribbon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 132px;
+    z-index: 99999;
+}
+
+.admin-bar .black-ribbon {
+    top: 32px;
+}
+
+.remove-filter {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 99999;
+}
+
+.admin-bar .remove-filter {
+    top: 32px;
+}
+
+.btn-remove-filter {
+    display: block;
+    padding: 6px 20px;
+    margin-top: 18px;
+    margin-right: 20px;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+ /* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px) {
+
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px) {
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) {
+    .black-ribbon {
+        width: 96px;
+    }
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (max-width : 480px) {
+    .black-ribbon {
+        width: 64px;
+    }
+    .admin-bar .black-ribbon {
+        top: 46px;
+    }
+    .admin-bar .remove-filter {
+        top: 46px;
+    }
+}
+
+/* Custom, iPhone Retina */ 
+@media only screen and (max-width : 320px) {
+    .black-ribbon {
+        width: 64px;
+    }
+    .admin-bar .black-ribbon {
+        top: 46px;
+    }
+    .admin-bar .remove-filter {
+        top: 46px;
+    }
 }
