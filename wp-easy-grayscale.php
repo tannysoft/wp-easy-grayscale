@@ -12,6 +12,21 @@
 * Domain Path:       /languages
 */
 
+/*
+Copyright 2016-2017 SeedThemes  (email : tannysoft@gmail.com)
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 2, as 
+published by the Free Software Foundation.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+
 add_action( 'wp_enqueue_scripts', 'wp_easy_grayscale_styles' );
 
 function load_jquery() {
@@ -29,6 +44,9 @@ function add_black_ribbon() {
 }
 
 function add_remove_grayscale() {
+
+    $local_key = str_replace(".", "_", $_SERVER["SERVER_NAME"]);
+
     echo "<div class=\"remove-filter\"><a href=\"#\" class=\"btn-remove-filter\">ปิดโหมดสีเทา</a></div>";
     echo '
 
@@ -36,7 +54,7 @@ function add_remove_grayscale() {
     
     jQuery(document).ready(function($) {
 
-        var is_grayscale = localStorage.getItem("wp_easy_grayscale");
+        var is_grayscale = localStorage.getItem("' . $local_key . '_wp_easy_grayscale");
 
         if(is_grayscale==1) {
             clear_grayscale();
@@ -44,7 +62,7 @@ function add_remove_grayscale() {
 
         $( ".btn-remove-filter" ).click(function() {
             clear_grayscale();
-            localStorage.setItem("wp_easy_grayscale", 1);
+            localStorage.setItem("' . $local_key . '_wp_easy_grayscale", 1);
         });
 
         function clear_grayscale() {
@@ -66,9 +84,10 @@ function wp_easy_grayscale_styles() {
 			$percent = $option['percent_number'];
 			$percent_divide = $percent / 100;
 		else:
-			$percent = 90;
-			$percent_divide = 9;
-		endif;
+			$percent = 40;
+			$percent_divide = 4;
+        endif;
+        
 
 		wp_enqueue_style(
 			'wp-easy-grayscale',
@@ -77,8 +96,7 @@ function wp_easy_grayscale_styles() {
             'all'
         );
 
-        $custom_css = "
-        	html {
+        $custom_css = "html {
 				/* IE */
 				filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=$percent_divide);
 				/* Chrome, Safari */
@@ -185,7 +203,7 @@ class WP_Easy_Grayscale_Page
             array( $this, 'wp_ribbon_callback' ), // Callback
             'wp-easy-grayscale', // Page
             'setting_section_id' // Section           
-        ); 
+        );
 
     }
 
