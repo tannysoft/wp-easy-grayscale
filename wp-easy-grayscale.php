@@ -60,7 +60,8 @@ function add_remove_grayscale() {
             clear_grayscale();
         }
 
-        $( ".btn-remove-filter" ).click(function() {
+        $( ".btn-remove-filter" ).click(function(e) {
+            e.preventDefault();
             clear_grayscale();
             localStorage.setItem("' . $local_key . '_wp_easy_grayscale", 1);
         });
